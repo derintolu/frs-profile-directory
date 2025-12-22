@@ -1,6 +1,6 @@
 <?php
 /**
- * LO State Filter Block - PHP Rendered
+ * LO State Filter Block - PHP Rendered with Interactivity API
  */
 
 declare(strict_types=1);
@@ -35,10 +35,15 @@ if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 2
 $wrapper_attributes = get_block_wrapper_attributes(['class' => 'frs-lo-state-filter']);
 ?>
 
-<div <?php echo $wrapper_attributes; ?>>
+<div <?php echo $wrapper_attributes; ?> data-wp-interactive="frs/lo-directory">
     <div class="frs-lo-state-filter__wrapper">
         <label class="frs-lo-state-filter__label" for="frs-lo-state-select"><?php echo esc_html($label); ?></label>
-        <select class="frs-lo-state-filter__select" id="frs-lo-state-select">
+        <select
+            class="frs-lo-state-filter__select"
+            id="frs-lo-state-select"
+            data-wp-on--change="actions.updateStateFilter"
+            data-wp-bind--value="state.selectedState"
+        >
             <option value="">All States</option>
             <?php foreach ($states as $state) : ?>
                 <option value="<?php echo esc_attr($state); ?>"><?php echo esc_html($state); ?></option>
@@ -46,46 +51,3 @@ $wrapper_attributes = get_block_wrapper_attributes(['class' => 'frs-lo-state-fil
         </select>
     </div>
 </div>
-
-<script>
-(function() {
-    const select = document.getElementById('frs-lo-state-select');
-    if (!select) return;
-
-    select.addEventListener('change', function() {
-        const state = this.value;
-
-        // Dispatch custom event
-        document.dispatchEvent(new CustomEvent('frs-lo-filter-state', {
-            detail: { state: state }
-        }));
-
-        // Filter cards directly
-        filterByState(state);
-    });
-
-    function filterByState(state) {
-        const cards = document.querySelectorAll('.frs-card');
-        let visibleCount = 0;
-
-        cards.forEach(card => {
-            // Skip already hidden by search
-            if (card.dataset.hiddenBySearch === 'true') return;
-
-            const areas = Array.from(card.querySelectorAll('.frs-card__area-tag')).map(t => t.textContent.trim());
-            const matches = !state || areas.includes(state);
-
-            card.style.display = matches ? '' : 'none';
-            card.dataset.hiddenByState = matches ? 'false' : 'true';
-
-            if (matches) visibleCount++;
-        });
-
-        // Update count
-        const countEl = document.querySelector('.frs-directory-block__count');
-        if (countEl) {
-            countEl.textContent = `${visibleCount} loan officer${visibleCount !== 1 ? 's' : ''} found`;
-        }
-    }
-})();
-</script>

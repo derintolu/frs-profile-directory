@@ -1,7 +1,6 @@
 <?php
 /**
- * Loan Officer Directory Block - PHP Rendered
- * Exact replica of production PHP template cards
+ * Loan Officer Directory Block - PHP Rendered with Interactivity API
  */
 
 declare(strict_types=1);
@@ -12,6 +11,13 @@ $hub_url = !empty($attributes['hubUrl']) ? $attributes['hubUrl'] : Blocks::get_h
 $per_page = $attributes['perPage'] ?? 12;
 $columns = $attributes['columns'] ?? 4;
 $video_url = Blocks::get_video_url();
+
+// Initialize Interactivity API state
+wp_interactivity_state('frs/lo-directory', [
+    'perPage' => $per_page,
+    'searchQuery' => '',
+    'selectedState' => '',
+]);
 
 // Fetch profiles
 $api_url = trailingslashit($hub_url) . 'wp-json/frs-users/v1/profiles?type=loan_officer&per_page=200';
@@ -36,12 +42,8 @@ $profiles = array_filter($profiles, function($p) use ($exclude, &$seen) {
 });
 $profiles = array_values($profiles);
 
-// Pagination
-$page = isset($_GET['lo_page']) ? max(1, intval($_GET['lo_page'])) : 1;
+// Total count for load more
 $total = count($profiles);
-$pages = (int) ceil($total / $per_page);
-$offset = ($page - 1) * $per_page;
-$paged = array_slice($profiles, $offset, $per_page);
 
 // Get states for filter
 $states = [];
@@ -311,11 +313,6 @@ $block_id = 'frs-dir-' . wp_unique_id();
     color: white !important;
 }
 
-/* Hidden cards (for load more) */
-.frs-card--hidden {
-    display: none;
-}
-
 /* Load More */
 .frs-directory-block__load-more {
     display: flex;
@@ -343,121 +340,29 @@ $block_id = 'frs-dir-' . wp_unique_id();
 }
 
 .frs-load-more-btn:hover {
-    background: linear-gradient(90deg, var(--frs-blue), var(--frs-cyan));
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-}
-
-.frs-load-more-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
-.frs-load-more-btn svg {
-    transition: transform 0.2s;
-}
-
-.frs-load-more-btn:hover svg {
-    transform: translateY(2px);
 }
 
 .frs-load-more-status {
     font-size: 0.875rem;
     color: var(--frs-text-light);
 }
-
-.frs-directory-block__load-more--hidden {
-    display: none;
-}
-
-/* QR Popup */
-.frs-qr-popup {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-}
-
-.frs-qr-popup--open {
-    display: flex;
-}
-
-.frs-qr-popup__backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-}
-
-.frs-qr-popup__content {
-    position: relative;
-    background: white;
-    border-radius: 16px;
-    padding: 1.5rem;
-    text-align: center;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    max-width: 280px;
-    width: 100%;
-}
-
-.frs-qr-popup__close {
-    position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--frs-text-light);
-    padding: 0.25rem;
-}
-
-.frs-qr-popup__close:hover {
-    color: var(--frs-navy);
-}
-
-.frs-qr-popup__qr {
-    width: 160px;
-    height: 160px;
-    margin: 0 auto 1rem;
-    border-radius: 50%;
-    overflow: hidden;
-    background: linear-gradient(white, white), linear-gradient(135deg, var(--frs-blue), var(--frs-cyan));
-    background-clip: padding-box, border-box;
-    background-origin: border-box;
-    border: 3px solid transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-}
-
-.frs-qr-popup__qr img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 4px;
-}
-
-.frs-qr-popup__name {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--frs-navy);
-    margin: 0 0 0.25rem;
-}
-
-.frs-qr-popup__hint {
-    font-size: 0.8125rem;
-    color: var(--frs-text-light);
-    margin: 0;
-}
 </style>
 
-<div class="frs-directory-block" id="<?php echo esc_attr($block_id); ?>">
+<?php
+$context = [
+    'visibleCount' => $per_page,
+    'totalCount' => $total,
+    'allLoaded' => $total <= $per_page,
+];
+?>
+<div
+    class="frs-directory-block"
+    id="<?php echo esc_attr($block_id); ?>"
+    data-wp-interactive="frs/lo-directory"
+    <?php echo wp_interactivity_data_wp_context($context); ?>
+>
     <div class="frs-directory-block__header">
         <span class="frs-directory-block__count"><?php echo esc_html($total); ?> loan officer<?php echo $total !== 1 ? 's' : ''; ?></span>
     </div>
@@ -479,8 +384,28 @@ $block_id = 'frs-dir-' . wp_unique_id();
             $areas = $lo['service_areas'] ?? [];
             $url = "/directory/lo/$slug";
             $unique_id = wp_unique_id('qr-grad-');
+
+            // Normalize service areas for filtering
+            $normalized_areas = [];
+            foreach ($areas as $area) {
+                $abbr = Blocks::normalize_state($area);
+                if ($abbr) $normalized_areas[] = $abbr;
+            }
+
+            // Card context for Interactivity API filtering
+            $card_context = [
+                'index' => $card_index,
+                'name' => strtolower($name),
+                'email' => strtolower($email),
+                'location' => strtolower($lo['city_state'] ?? ''),
+                'serviceAreas' => $normalized_areas,
+            ];
         ?>
-        <div class="frs-card<?php echo $card_index > $per_page ? ' frs-card--hidden' : ''; ?>" data-index="<?php echo $card_index; ?>">
+        <div
+            class="frs-card"
+            <?php echo wp_interactivity_data_wp_context($card_context); ?>
+            data-wp-bind--hidden="callbacks.isCardHidden"
+        >
             <div class="frs-card__header">
                 <?php if ($video_url) : ?>
                     <video autoplay loop muted playsinline>
@@ -564,192 +489,20 @@ $block_id = 'frs-dir-' . wp_unique_id();
     </div>
 
     <?php if ($total > $per_page) : ?>
-    <div class="frs-directory-block__load-more">
-        <button type="button" class="frs-load-more-btn" data-per-page="<?php echo esc_attr($per_page); ?>" data-total="<?php echo esc_attr($total); ?>">
+    <div class="frs-directory-block__load-more" data-wp-bind--hidden="context.allLoaded">
+        <button
+            type="button"
+            class="frs-load-more-btn"
+            data-wp-on--click="actions.loadMore"
+        >
             Load More
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="6 9 12 15 18 9"/>
             </svg>
         </button>
-        <span class="frs-load-more-status">Showing <span class="frs-showing-count"><?php echo min($per_page, $total); ?></span> of <?php echo esc_html($total); ?></span>
+        <span class="frs-load-more-status">
+            Showing <span data-wp-text="context.visibleCount"></span> of <?php echo esc_html($total); ?>
+        </span>
     </div>
     <?php endif; ?>
 </div>
-
-<!-- QR Popup -->
-<div class="frs-qr-popup" id="<?php echo esc_attr($block_id); ?>-qr-popup">
-    <div class="frs-qr-popup__backdrop"></div>
-    <div class="frs-qr-popup__content">
-        <button class="frs-qr-popup__close" aria-label="Close">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-        </button>
-        <div class="frs-qr-popup__qr">
-            <img src="" alt="QR Code">
-        </div>
-        <p class="frs-qr-popup__name"></p>
-        <p class="frs-qr-popup__hint">Scan to view profile</p>
-    </div>
-</div>
-
-<script>
-(function() {
-    const blockId = '<?php echo esc_js($block_id); ?>';
-    const block = document.getElementById(blockId);
-    const popup = document.getElementById(blockId + '-qr-popup');
-
-    if (!block || !popup) return;
-
-    const backdrop = popup.querySelector('.frs-qr-popup__backdrop');
-    const closeBtn = popup.querySelector('.frs-qr-popup__close');
-    const qrImg = popup.querySelector('.frs-qr-popup__qr img');
-    const qrName = popup.querySelector('.frs-qr-popup__name');
-
-    // Load More functionality
-    const loadMoreContainer = block.querySelector('.frs-directory-block__load-more');
-    const loadMoreBtn = block.querySelector('.frs-load-more-btn');
-    const showingCountEl = block.querySelector('.frs-showing-count');
-    const perPage = loadMoreBtn ? parseInt(loadMoreBtn.dataset.perPage) || 12 : 12;
-    const totalCards = loadMoreBtn ? parseInt(loadMoreBtn.dataset.total) || 0 : 0;
-    let currentlyShowing = perPage;
-
-    if (loadMoreBtn) {
-        loadMoreBtn.addEventListener('click', function() {
-            const hiddenCards = block.querySelectorAll('.frs-card.frs-card--hidden');
-            const toShow = Array.from(hiddenCards).slice(0, perPage);
-
-            toShow.forEach((card, i) => {
-                // Stagger animation
-                setTimeout(() => {
-                    card.classList.remove('frs-card--hidden');
-                    card.style.animation = 'frs-fade-in 0.3s ease-out';
-                }, i * 50);
-            });
-
-            currentlyShowing += toShow.length;
-
-            // Update status
-            if (showingCountEl) {
-                showingCountEl.textContent = currentlyShowing;
-            }
-
-            // Hide button if no more cards
-            const remainingHidden = block.querySelectorAll('.frs-card.frs-card--hidden').length - toShow.length;
-            if (remainingHidden <= 0) {
-                loadMoreContainer.classList.add('frs-directory-block__load-more--hidden');
-            }
-        });
-    }
-
-    // QR button clicks
-    block.addEventListener('click', function(e) {
-        const btn = e.target.closest('.frs-card__qr-btn');
-        if (btn) {
-            const qrData = btn.dataset.qr;
-            const name = btn.dataset.name;
-            if (qrData) {
-                qrImg.src = qrData;
-                qrName.textContent = name;
-                popup.classList.add('frs-qr-popup--open');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-    });
-
-    function closePopup() {
-        popup.classList.remove('frs-qr-popup--open');
-        document.body.style.overflow = '';
-    }
-
-    backdrop.addEventListener('click', closePopup);
-    closeBtn.addEventListener('click', closePopup);
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && popup.classList.contains('frs-qr-popup--open')) {
-            closePopup();
-        }
-    });
-
-    // Listen for search/filter events from other blocks
-    document.addEventListener('frs-lo-search', function(e) {
-        const query = (e.detail.query || '').toLowerCase();
-        filterCards(query, null);
-    });
-
-    document.addEventListener('frs-lo-filter-state', function(e) {
-        const state = e.detail.state || '';
-        filterCards(null, state);
-    });
-
-    let currentSearch = '';
-    let currentState = '';
-
-    function filterCards(search, state) {
-        if (search !== null) currentSearch = search;
-        if (state !== null) currentState = state;
-
-        const cards = block.querySelectorAll('.frs-card');
-        let visibleCount = 0;
-        let matchingHiddenCount = 0;
-
-        cards.forEach(card => {
-            const name = card.querySelector('.frs-card__name')?.textContent?.toLowerCase() || '';
-            const title = card.querySelector('.frs-card__title-nmls')?.textContent?.toLowerCase() || '';
-            const areas = Array.from(card.querySelectorAll('.frs-card__area-tag')).map(t => t.textContent.trim());
-            const areasLower = areas.join(' ').toLowerCase();
-            const contact = card.querySelector('.frs-card__contact')?.textContent?.toLowerCase() || '';
-
-            const searchText = `${name} ${title} ${areasLower} ${contact}`;
-            const matchesSearch = !currentSearch || searchText.includes(currentSearch);
-            const matchesState = !currentState || areas.includes(currentState);
-            const matches = matchesSearch && matchesState;
-
-            // When filtering, show all matching cards (remove hidden class)
-            if (currentSearch || currentState) {
-                if (matches) {
-                    card.classList.remove('frs-card--hidden');
-                    card.style.display = '';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
-            } else {
-                // No filters - restore load more behavior
-                const index = parseInt(card.dataset.index) || 0;
-                if (index <= currentlyShowing) {
-                    card.classList.remove('frs-card--hidden');
-                    card.style.display = '';
-                    visibleCount++;
-                } else {
-                    card.classList.add('frs-card--hidden');
-                    card.style.display = '';
-                    matchingHiddenCount++;
-                }
-            }
-        });
-
-        // Update count
-        const countEl = block.querySelector('.frs-directory-block__count');
-        if (countEl) {
-            countEl.textContent = `${visibleCount} loan officer${visibleCount !== 1 ? 's' : ''}`;
-        }
-
-        // Show/hide load more based on filters
-        if (loadMoreContainer) {
-            if (currentSearch || currentState) {
-                // Hide load more when filtering
-                loadMoreContainer.classList.add('frs-directory-block__load-more--hidden');
-            } else if (matchingHiddenCount > 0) {
-                // Show load more if there are hidden cards
-                loadMoreContainer.classList.remove('frs-directory-block__load-more--hidden');
-            }
-        }
-
-        // Update showing count
-        if (showingCountEl && !currentSearch && !currentState) {
-            showingCountEl.textContent = visibleCount;
-        }
-    }
-})();
-</script>

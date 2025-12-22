@@ -19,7 +19,8 @@
       "wide",
       "full"
     ],
-    "html": false
+    "html": false,
+    "interactivity": true
   },
   "attributes": {
     "hubUrl": {
@@ -44,6 +45,7 @@
     }
   },
   "editorScript": "file:./index.js",
+  "viewScriptModule": "file:./view.js",
   "style": "file:./style-index.css",
   "render": "file:./render.php"
 }

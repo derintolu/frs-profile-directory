@@ -61,7 +61,8 @@ return array(
 				'wide',
 				'full'
 			),
-			'html' => false
+			'html' => false,
+			'interactivity' => true
 		),
 		'attributes' => array(
 			'hubUrl' => array(
@@ -86,6 +87,7 @@ return array(
 			)
 		),
 		'editorScript' => 'file:./index.js',
+		'viewScriptModule' => 'file:./view.js',
 		'style' => 'file:./style-index.css',
 		'render' => 'file:./render.php'
 	),
@@ -109,7 +111,8 @@ return array(
 				'wide',
 				'full'
 			),
-			'html' => false
+			'html' => false,
+			'interactivity' => true
 		),
 		'attributes' => array(
 			'placeholder' => array(
@@ -142,7 +145,8 @@ return array(
 				'wide',
 				'full'
 			),
-			'html' => false
+			'html' => false,
+			'interactivity' => true
 		),
 		'attributes' => array(
 			'hubUrl' => array(

@@ -11,7 +11,8 @@
     "textdomain": "frs-profile-directory",
     "supports": {
         "align": ["wide", "full"],
-        "html": false
+        "html": false,
+        "interactivity": true
     },
     "attributes": {
         "hubUrl": {

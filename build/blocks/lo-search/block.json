@@ -18,7 +18,8 @@
       "wide",
       "full"
     ],
-    "html": false
+    "html": false,
+    "interactivity": true
   },
   "attributes": {
     "placeholder": {
