@@ -1,0 +1,41 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "frs/lo-directory",
+    "version": "1.0.0",
+    "title": "Loan Officer Directory",
+    "category": "widgets",
+    "icon": "businessperson",
+    "description": "Display a searchable directory of loan officers with service area filtering.",
+    "keywords": ["directory", "loan officer", "team", "mortgage"],
+    "textdomain": "frs-profile-directory",
+    "supports": {
+        "align": ["wide", "full"],
+        "html": false
+    },
+    "attributes": {
+        "hubUrl": {
+            "type": "string",
+            "default": ""
+        },
+        "showSearch": {
+            "type": "boolean",
+            "default": true
+        },
+        "showServiceAreaFilter": {
+            "type": "boolean",
+            "default": true
+        },
+        "perPage": {
+            "type": "number",
+            "default": 12
+        },
+        "columns": {
+            "type": "number",
+            "default": 4
+        }
+    },
+    "editorScript": "file:./index.js",
+    "style": "file:./style-index.css",
+    "render": "file:./render.php"
+}

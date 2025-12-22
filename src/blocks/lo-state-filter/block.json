@@ -1,0 +1,29 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "frs/lo-state-filter",
+    "version": "1.0.0",
+    "title": "LO State Filter",
+    "category": "widgets",
+    "icon": "location",
+    "description": "Filter loan officers by service area/state.",
+    "keywords": ["filter", "state", "location", "directory"],
+    "textdomain": "frs-profile-directory",
+    "supports": {
+        "align": ["wide", "full"],
+        "html": false
+    },
+    "attributes": {
+        "hubUrl": {
+            "type": "string",
+            "default": ""
+        },
+        "label": {
+            "type": "string",
+            "default": "Filter by State"
+        }
+    },
+    "editorScript": "file:./index.js",
+    "style": "file:./style-index.css",
+    "render": "file:./render.php"
+}

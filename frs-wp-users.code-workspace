@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "../frs-wp-users"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../frs-lead-pages"
+		},
+		{
+			"path": "../frs-mortgage-calculator"
+		},
+		{
+			"path": "../frs-lrg"
+		}
+	],
+	"settings": {}
+}

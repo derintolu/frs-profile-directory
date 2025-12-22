@@ -1,0 +1,38 @@
+# Development files
+.git
+.gitignore
+.distignore
+node_modules
+src
+/package.json
+/package-lock.json
+webpack.config.js
+.eslintrc.js
+.prettierrc
+.editorconfig
+
+# IDE files
+.vscode
+.idea
+*.sublime-*
+
+# Testing
+tests
+phpunit.xml
+phpcs.xml
+
+# Misc
+*.log
+*.map
+.DS_Store
+Thumbs.db
+
+# Data files
+*.csv
+*.sql
+
+# Scripts - keep scripts folder, only exclude its node_modules
+scripts/node_modules
+
+# Workspace files
+*.code-workspace

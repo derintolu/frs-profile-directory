@@ -1,0 +1,32 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "frs/lo-search",
+  "version": "1.0.0",
+  "title": "LO Directory Search",
+  "category": "widgets",
+  "icon": "search",
+  "description": "Search bar for filtering loan officer directory.",
+  "keywords": [
+    "search",
+    "filter",
+    "directory"
+  ],
+  "textdomain": "frs-profile-directory",
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "html": false
+  },
+  "attributes": {
+    "placeholder": {
+      "type": "string",
+      "default": "Search by name, location, or specialty..."
+    }
+  },
+  "editorScript": "file:./index.js",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}

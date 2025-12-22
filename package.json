@@ -1,0 +1,20 @@
+{
+    "name": "frs-profile-directory",
+    "version": "1.1.0",
+    "description": "Loan Officer Directory blocks with WordPress Interactivity API",
+    "author": "21st Century Lending",
+    "license": "GPL-2.0-or-later",
+    "scripts": {
+        "build": "wp-scripts build --experimental-modules --blocks-manifest",
+        "start": "wp-scripts start --experimental-modules --blocks-manifest",
+        "format": "wp-scripts format",
+        "lint:css": "wp-scripts lint-css",
+        "lint:js": "wp-scripts lint-js"
+    },
+    "devDependencies": {
+        "@wordpress/scripts": "^30.0.0"
+    },
+    "dependencies": {
+        "qr-code-styling": "^1.9.2"
+    }
+}
