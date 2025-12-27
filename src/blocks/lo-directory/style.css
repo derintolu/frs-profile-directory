@@ -1,144 +1,26 @@
 /**
  * Loan Officer Directory Block Styles
+ * Based on production DirectoryProfileCard.tsx and directory.php
  *
  * @package FRSProfileDirectory
  */
 
 /* ==========================================================================
-   Directory Container
+   Variables & Container
    ========================================================================== */
 
-.frs-lo-directory {
+.wp-block-frs-lo-directory {
     --frs-cyan: #2dd4da;
     --frs-blue: #2563eb;
-    --frs-navy: #020817;
     --frs-light-blue: #4678eb;
-    --frs-border-blue: #0066cc;
+    --frs-navy: #020817;
     --frs-text: #374151;
     --frs-text-light: #6b7280;
     --frs-border: #e5e7eb;
     --frs-bg: #ffffff;
     --frs-bg-light: #f9fafb;
     --frs-radius: 8px;
-
-    font-family: 'Mona Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: var(--frs-text);
-}
-
-/* ==========================================================================
-   Filters Bar
-   ========================================================================== */
-
-.frs-lo-directory__filters {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    padding: 1rem 1.25rem;
-    background: var(--frs-bg-light);
-    border-radius: var(--frs-radius);
-}
-
-.frs-lo-directory__search-group {
-    position: relative;
-    flex: 1;
-    min-width: 250px;
-}
-
-.frs-lo-directory__search-icon {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 20px;
-    height: 20px;
-    color: var(--frs-text-light);
-    pointer-events: none;
-}
-
-.frs-lo-directory__search {
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.75rem;
-    border: 1px solid var(--frs-border);
-    border-radius: var(--frs-radius);
-    font-size: 1rem;
-    background: var(--frs-bg);
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.frs-lo-directory__search:focus {
-    outline: none;
-    border-color: var(--frs-blue);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.frs-lo-directory__filter-group {
-    position: relative;
-    min-width: 160px;
-}
-
-.frs-lo-directory__state-select {
-    width: 100%;
-    padding: 0.75rem 2.5rem 0.75rem 1rem;
-    border: 1px solid var(--frs-border);
-    border-radius: var(--frs-radius);
-    font-size: 1rem;
-    background: var(--frs-bg);
-    cursor: pointer;
-    appearance: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.frs-lo-directory__state-select:focus {
-    outline: none;
-    border-color: var(--frs-blue);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.frs-lo-directory__select-arrow {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 18px;
-    height: 18px;
-    color: var(--frs-text-light);
-    pointer-events: none;
-}
-
-.frs-lo-directory__clear-btn {
-    padding: 0.75rem 1.25rem;
-    border: 1px solid var(--frs-border);
-    border-radius: var(--frs-radius);
-    background: var(--frs-bg);
-    color: var(--frs-text);
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-}
-
-.frs-lo-directory__clear-btn:hover {
-    border-color: var(--frs-blue);
-    color: var(--frs-blue);
-}
-
-@media (max-width: 640px) {
-    .frs-lo-directory__filters {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .frs-lo-directory__search-group,
-    .frs-lo-directory__filter-group {
-        min-width: 100%;
-    }
-
-    .frs-lo-directory__clear-btn {
-        width: 100%;
-        text-align: center;
-    }
+    font-family: 'Mona Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* ==========================================================================
@@ -150,27 +32,20 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--frs-border);
 }
 
 .frs-lo-directory__results-count {
-    font-size: 0.9375rem;
-    color: var(--frs-text-light);
-}
-
-.frs-lo-directory__page-info {
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     color: var(--frs-text-light);
 }
 
 /* ==========================================================================
-   LO Card Grid
+   Grid Layout
    ========================================================================== */
 
 .frs-lo-directory__grid {
     display: grid;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
 .frs-lo-directory__grid--cols-2 {
@@ -185,141 +60,31 @@
     grid-template-columns: repeat(4, 1fr);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
+    .frs-lo-directory__grid--cols-4 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
     .frs-lo-directory__grid--cols-4,
     .frs-lo-directory__grid--cols-3 {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
     .frs-lo-directory__grid {
         grid-template-columns: 1fr;
     }
 }
 
-.frs-lo-directory__no-results {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 3rem 1rem;
-    color: var(--frs-text-light);
-}
-
-.frs-lo-directory__btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--frs-radius);
-    font-size: 0.9375rem;
-    font-weight: 500;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s;
-}
-
-.frs-lo-directory__btn--outline {
-    border: 2px solid transparent;
-    background: linear-gradient(white, white), linear-gradient(90deg, var(--frs-cyan), var(--frs-blue));
-    background-clip: padding-box, border-box;
-    background-origin: padding-box, border-box;
-    color: var(--frs-light-blue);
-}
-
-.frs-lo-directory__btn--outline:hover {
-    opacity: 0.9;
-}
-
 /* ==========================================================================
-   Pagination
-   ========================================================================== */
-
-.frs-lo-directory__pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--frs-border);
-}
-
-.frs-lo-directory__pagination-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--frs-border);
-    border-radius: var(--frs-radius);
-    background: var(--frs-bg);
-    color: var(--frs-text);
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.frs-lo-directory__pagination-btn:hover:not(:disabled) {
-    border-color: var(--frs-blue);
-    color: var(--frs-blue);
-}
-
-.frs-lo-directory__pagination-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.frs-lo-directory__pagination-pages {
-    display: flex;
-    gap: 0.25rem;
-}
-
-.frs-lo-directory__pagination-page {
-    min-width: 2.25rem;
-    height: 2.25rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--frs-border);
-    border-radius: var(--frs-radius);
-    background: var(--frs-bg);
-    color: var(--frs-text);
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.frs-lo-directory__pagination-page:hover {
-    border-color: var(--frs-blue);
-    color: var(--frs-blue);
-}
-
-.frs-lo-directory__pagination-page--active {
-    background: linear-gradient(90deg, var(--frs-cyan), var(--frs-blue));
-    border-color: transparent;
-    color: white;
-}
-
-.frs-lo-directory__pagination-page--active:hover {
-    color: white;
-}
-
-.frs-lo-directory__pagination-ellipsis {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 2.25rem;
-    height: 2.25rem;
-    color: var(--frs-text-light);
-}
-
-/* ==========================================================================
-   LO Card - Matching DirectoryProfileCard design
+   Card - Base
    ========================================================================== */
 
 .frs-lo-card {
     width: 100%;
-    aspect-ratio: 10 / 13;
     overflow: hidden;
     border-radius: 0.25rem;
     border: 2px solid transparent;
@@ -336,7 +101,10 @@
     transform: translateY(-2px);
 }
 
-/* Video Header - 115px */
+/* ==========================================================================
+   Card Header - Video Background (115px)
+   ========================================================================== */
+
 .frs-lo-card__header {
     height: 115px;
     overflow: hidden;
@@ -355,14 +123,47 @@
     background: linear-gradient(135deg, var(--frs-cyan) 0%, var(--frs-blue) 100%);
 }
 
-/* Avatar - 148x148px with gradient border */
+/* ==========================================================================
+   QR Toggle Button
+   ========================================================================== */
+
+.frs-lo-card__qr-toggle {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 35px;
+    height: 35px;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    background: linear-gradient(white, white), linear-gradient(90deg, var(--frs-cyan), var(--frs-blue));
+    background-clip: padding-box, border-box;
+    background-origin: padding-box, border-box;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: transform 0.2s;
+}
+
+.frs-lo-card__qr-toggle:hover {
+    transform: scale(1.1);
+}
+
+.frs-lo-card__qr-toggle svg {
+    width: 16px;
+    height: 16px;
+    color: var(--frs-blue);
+}
+
+/* ==========================================================================
+   Avatar - 148px with Gradient Border & Flip
+   ========================================================================== */
+
 .frs-lo-card__avatar {
     width: 148px;
     height: 148px;
-    min-width: 148px;
-    min-height: 148px;
-    max-width: 148px;
-    max-height: 148px;
     margin: -74px auto 0;
     perspective: 1000px;
     position: relative;
@@ -424,8 +225,6 @@
 .frs-lo-card__avatar-placeholder {
     width: 140px;
     height: 140px;
-    min-width: 140px;
-    min-height: 140px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -437,67 +236,17 @@
 }
 
 .frs-lo-card__qr-code {
-    width: 55px;
-    height: 55px;
+    width: 90px;
+    height: 90px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.frs-lo-card__qr-code svg,
-.frs-lo-card__qr-code img {
-    width: 100%;
-    height: 100%;
-}
+/* ==========================================================================
+   Card Content
+   ========================================================================== */
 
-/* Video Header - needs relative positioning for QR button */
-.frs-lo-card__header {
-    position: relative;
-}
-
-/* QR Toggle Button - positioned top-right of video header */
-.frs-lo-card__qr-toggle {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 32px;
-    height: 32px;
-    border: 2px solid transparent;
-    border-radius: 50%;
-    background: linear-gradient(white, white), linear-gradient(90deg, var(--frs-cyan), var(--frs-blue));
-    background-clip: padding-box, border-box;
-    background-origin: padding-box, border-box;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    transition: transform 0.2s;
-}
-
-.frs-lo-card__qr-toggle:hover {
-    transform: scale(1.1);
-}
-
-.frs-lo-card__qr-toggle svg {
-    width: 16px;
-    height: 16px;
-    color: var(--frs-blue);
-}
-
-/* Hidden utility class */
-.hidden {
-    display: none !important;
-}
-
-/* Icon visibility controlled by Interactivity API data-wp-class--hidden */
-.frs-lo-card__icon-qr,
-.frs-lo-card__icon-avatar {
-    color: var(--frs-blue);
-}
-
-/* Content */
 .frs-lo-card__content {
     padding: 1rem 1rem 0;
     text-align: center;
@@ -509,12 +258,25 @@
 
 /* Name - 30px, Bold, Navy */
 .frs-lo-card__name {
-    font-size: 1.5rem;
+    font-size: 1.875rem;
     font-weight: 700;
     color: var(--frs-navy);
     margin: 0 0 0.25rem;
     line-height: 1.2;
     font-family: 'Mona Sans', sans-serif;
+}
+
+/* Title & NMLS - Gradient Text */
+.frs-lo-card__title-nmls {
+    font-size: 1rem;
+    margin: 0 0 0.75rem;
+    background: linear-gradient(90deg, var(--frs-cyan), var(--frs-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: -0.32px;
+    line-height: 1.5;
 }
 
 /* Service Areas Tags */
@@ -535,20 +297,10 @@
     font-weight: 600;
 }
 
-/* Title & NMLS - Gradient Text */
-.frs-lo-card__title-nmls {
-    font-size: 1rem;
-    margin: 0 0 0.75rem;
-    background: linear-gradient(90deg, var(--frs-cyan), var(--frs-blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-family: 'Roboto', sans-serif;
-    letter-spacing: -0.32px;
-    line-height: 1.5;
-}
+/* ==========================================================================
+   Contact Info
+   ========================================================================== */
 
-/* Contact Info */
 .frs-lo-card__contact {
     display: flex;
     flex-direction: column;
@@ -565,14 +317,9 @@
 }
 
 .frs-lo-card__contact-icon {
-    width: 18px;
-    height: 18px;
+    width: 25px;
+    height: 25px;
     flex-shrink: 0;
-}
-
-/* Gradient fill for icons */
-.frs-lo-card__contact-icon-gradient {
-    fill: url(#icon-gradient);
 }
 
 .frs-lo-card__contact-link {
@@ -591,11 +338,14 @@
     font-family: 'Mona Sans', sans-serif;
 }
 
-/* Actions - Side by side buttons */
+/* ==========================================================================
+   Action Buttons
+   ========================================================================== */
+
 .frs-lo-card__actions {
     display: flex;
     gap: 0.5rem;
-    padding: 0.625rem 1rem 1rem;
+    padding: 0.625rem 2rem 1.25rem;
     margin-top: auto;
 }
 
@@ -640,24 +390,67 @@
     opacity: 0.9;
 }
 
-.frs-lo-card__btn svg {
-    width: 14px;
-    height: 14px;
+/* ==========================================================================
+   Load More / Pagination
+   ========================================================================== */
+
+.frs-lo-directory__pagination {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--frs-border);
+}
+
+.frs-lo-directory__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 2rem;
+    border-radius: var(--frs-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.frs-lo-directory__btn--outline {
+    border: 2px solid transparent;
+    background: linear-gradient(white, white), linear-gradient(90deg, var(--frs-cyan), var(--frs-blue));
+    background-clip: padding-box, border-box;
+    background-origin: padding-box, border-box;
+    color: var(--frs-light-blue);
+}
+
+.frs-lo-directory__btn--outline:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.frs-lo-directory__page-info {
+    font-size: 0.875rem;
+    color: var(--frs-text-light);
 }
 
 /* ==========================================================================
-   Loading State
+   No Results
    ========================================================================== */
 
-.frs-lo-card--loading {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.frs-lo-directory__no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--frs-text-light);
 }
 
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5;
-    }
+/* ==========================================================================
+   Hidden utility
+   ========================================================================== */
+
+[hidden] {
+    display: none !important;
 }

@@ -23,7 +23,10 @@ $is_spoke = Blocks::is_spoke_site();
 $slug = $attributes['slug'] ?? '';
 if (empty($slug)) {
     // Try to get from URL query param or rewrite
-    $slug = get_query_var('profile_slug', '');
+    $slug = get_query_var('frs_lo_profile', '');
+    if (empty($slug)) {
+        $slug = get_query_var('profile_slug', '');
+    }
     if (empty($slug) && isset($_GET['profile'])) {
         $slug = sanitize_title($_GET['profile']);
     }

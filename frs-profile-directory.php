@@ -295,10 +295,10 @@ function register_rewrite_rules(): void {
         'top'
     );
 
-    // /directory/lo/{slug} - single LO profile
+    // /directory/lo/{slug} - single LO profile (points to page with slug 'lo-profile')
     add_rewrite_rule(
         '^directory/lo/([^/]+)/?$',
-        'index.php?frs_lo_profile=$matches[1]',
+        'index.php?pagename=lo-profile&frs_lo_profile=$matches[1]',
         'top'
     );
 
@@ -365,43 +365,8 @@ function handle_lo_profile_route(): void {
         exit;
     }
 
-    if ($profile_slug) {
-        // Single LO profile
-        $api_url = trailingslashit($hub_url) . 'wp-json/frs-users/v1/profiles/slug/' . sanitize_title($profile_slug);
-
-        $response = wp_remote_get($api_url, [
-            'timeout' => 15,
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-        ]);
-
-        $profile = null;
-        if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
-            $body = json_decode(wp_remote_retrieve_body($response), true);
-            // API returns { data: { ... } } structure
-            $profile = $body['data'] ?? $body;
-        }
-
-        // Set post type for Blocksy styling
-        $wp_query->set('post_type', 'frs_lo_profile');
-        $wp_query->is_single = true;
-
-        // Create a fake post object for Blocksy
-        $full_name = trim(($profile['first_name'] ?? '') . ' ' . ($profile['last_name'] ?? ''));
-        $post = new \WP_Post((object) [
-            'ID' => 0,
-            'post_type' => 'frs_lo_profile',
-            'post_title' => $full_name ?: 'LO Profile',
-            'post_status' => 'publish',
-            'post_name' => $profile_slug,
-        ]);
-        $wp_query->post = $post;
-        $wp_query->posts = [$post];
-
-        include FRS_DIRECTORY_DIR . 'templates/lo-profile.php';
-        exit;
-    }
+    // Profile pages now handled by WordPress page with lo-detail block
+    // The rewrite rule points to pagename=lo-profile with frs_lo_profile query var
 
     if ($qr_landing_slug) {
         // QR landing page with options
