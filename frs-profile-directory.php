@@ -47,6 +47,12 @@ function has_remote_data_blocks(): bool {
  * Initialize the plugin.
  */
 function init(): void {
+    // Flush rewrite rules if activation flag is set
+    if (get_option('frs_directory_flush_rewrite')) {
+        flush_rewrite_rules();
+        delete_option('frs_directory_flush_rewrite');
+    }
+
     // Load includes
     require_once FRS_DIRECTORY_DIR . 'includes/class-blocks.php';
     require_once FRS_DIRECTORY_DIR . 'includes/class-api-client.php';
